@@ -70,5 +70,14 @@ class confersLotofacil{
         return $result;
     }
 }
+$update_response = file_get_contents('php://input');
+$response = json_decode($update_response, true);
+
+if (isset($response["message"])) {
+echo $response["message"]["text"];
+
+}else{
 
 $game = new confersLotofacil();
+
+}
