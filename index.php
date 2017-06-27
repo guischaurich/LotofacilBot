@@ -7,7 +7,7 @@ Versão: 1.l
 */
 class confersLotofacil{ 
 
-    public function __construct(){
+    public function callGames(){
         $result = $this->getLastGame(['1','2','3','5','7','9','11','13','15','19','20','21','23','24','25']);
 
         echo "Você acertou ".$result["hits"]." números no jogo ".$result["gameNumber"].".";
@@ -69,15 +69,26 @@ class confersLotofacil{
 
         return $result;
     }
+
+    function sendMessage($method, $parameters) {
+        $options = array(
+        'http' => array(
+            'method'  => 'POST',
+            'content' => json_encode($parameters),
+            'header'=>  "Content-Type: application/json\r\n" .
+                        "Accept: application/json\r\n"
+            )
+        );
+    }
 }
 $update_response = file_get_contents('php://input');
 $response = json_decode($update_response, true);
-
+$game = new confersLotofacil();
 if (isset($response["message"])) {
-echo $response["message"]["text"];
-
+//echo $response["message"]["text"];
+$game->sendMessage("sendMessage", array('chat_id' => 44445359, "text" => 'retorno'));
 }else{
 
-$game = new confersLotofacil();
+$game->callGames();
 
 }
