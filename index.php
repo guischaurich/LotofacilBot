@@ -16,4 +16,4 @@ class confersLoto{
     }
 }
 
-confersLoto();
+$confersLotoGame = new confersLoto();
