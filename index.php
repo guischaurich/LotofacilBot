@@ -9,8 +9,7 @@ Versão: 1.1
 
 
 class confersLotofacil{ 
-	public $botToken = $_ENV["TELEGRAM_BOT_TOKEN"];
-	public $chatAdmin = $_ENV["CHAT_ID"];
+	
     public function callGames(){
         $result = $this->getLastGame(['1','2','3','5','7','9','11','13','15','19','20','21','23','24','25']);
 
@@ -94,6 +93,8 @@ class confersLotofacil{
 $update_response = file_get_contents('php://input');
 $response = json_decode($update_response, true);
 $game = new confersLotofacil();
+$game->botToken = $_ENV["TELEGRAM_BOT_TOKEN"];
+$game->chatAdmin = $_ENV["CHAT_ID"];
 if (isset($response["message"])) {
 //echo $response["message"]["text"];
 $game->sendMessage("sendMessage", array('chat_id' => $chatAdmin, "text" => 'retorno'));
