@@ -85,7 +85,7 @@ class confersLotofacil{
 
 
         $context  = stream_context_create( $options );
-        file_get_contents('https://api.telegram.org/bot'.$botToken.'/'.$method, false, $context );
+        file_get_contents('https://api.telegram.org/bot'.$this->botToken.'/'.$method, false, $context );
 
     }
 }
@@ -97,7 +97,7 @@ $game->botToken = $_ENV["TELEGRAM_BOT_TOKEN"];
 $game->chatAdmin = $_ENV["CHAT_ID"];
 if (isset($response["message"])) {
 //echo $response["message"]["text"];
-$game->sendMessage("sendMessage", array('chat_id' => $chatAdmin, "text" => 'retorno'));
+$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'retorno'));
 }else{
 
 $game->callGames();
