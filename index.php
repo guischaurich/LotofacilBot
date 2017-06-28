@@ -82,7 +82,7 @@ class confersLotofacil{
 
 
         $context  = stream_context_create( $options );
-        file_get_contents('https://api.telegram.org/bot'.ENV['TELEGRAM_BOT_TOKEN'].'/'.$method, false, $context );
+        file_get_contents('https://api.telegram.org/bot'.$_ENV["TELEGRAM_BOT_TOKEN"].'/'.$method, false, $context );
 
 
 
