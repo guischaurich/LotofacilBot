@@ -82,15 +82,12 @@ class confersLotofacil{
 
 
         $context  = stream_context_create( $options );
-        file_get_contents('https://api.telegram.org/bot'.$dotenv->getenv('TELEGRAM_BOT_TOKEN').'/'.$method, false, $context );
+        file_get_contents('https://api.telegram.org/bot/'.$method, false, $context );
 
 
 
     }
 }
-
-$dotenv = new Dotenv\Dotenv(__DIR__);
-$dotenv->load();
 
 $update_response = file_get_contents('php://input');
 $response = json_decode($update_response, true);
