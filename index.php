@@ -6,11 +6,11 @@ Data: 28/06/2017
 Versão: 1.1
 */
 
-$botToken = $_ENV["TELEGRAM_BOT_TOKEN"];
-$chatAdmin = $_ENV["CHAT_ID"];
+
 
 class confersLotofacil{ 
-
+	public $botToken = $_ENV["TELEGRAM_BOT_TOKEN"];
+	public $chatAdmin = $_ENV["CHAT_ID"];
     public function callGames(){
         $result = $this->getLastGame(['1','2','3','5','7','9','11','13','15','19','20','21','23','24','25']);
 
