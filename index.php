@@ -2,9 +2,13 @@
 /*
 Bot para conferir jogos da lotofacil.
 Autor: Guilherme Schaurich
-Data: 26/06/2017
-Versão: 1.l
+Data: 28/06/2017
+Versão: 1.1
 */
+
+$botToken = $_ENV["TELEGRAM_BOT_TOKEN"];
+$chatAdmin = $_ENV["CHAT_ID"];
+
 class confersLotofacil{ 
 
     public function callGames(){
@@ -82,9 +86,7 @@ class confersLotofacil{
 
 
         $context  = stream_context_create( $options );
-        file_get_contents('https://api.telegram.org/bot'.$_ENV["TELEGRAM_BOT_TOKEN"].'/'.$method, false, $context );
-
-
+        file_get_contents('https://api.telegram.org/bot'.$chatAdmin.'/'.$method, false, $context );
 
     }
 }
@@ -94,7 +96,7 @@ $response = json_decode($update_response, true);
 $game = new confersLotofacil();
 if (isset($response["message"])) {
 //echo $response["message"]["text"];
-$game->sendMessage("sendMessage", array('chat_id' => 44445359, "text" => 'retorno'));
+$game->sendMessage("sendMessage", array('chat_id' => $chatAdmin, "text" => 'retorno'));
 }else{
 
 $game->callGames();
