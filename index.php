@@ -96,7 +96,7 @@ $game->botToken = $_ENV["TELEGRAM_BOT_TOKEN"];
 $game->chatAdmin = $_ENV["CHAT_ID"];
 if (isset($response["message"])) {
 	if(file_exists($response["message"]["from"]["id"].".txt")){
-		$archive = fopen($response["message"]["from"]["id"].".txt","a");
+		$archive = fopen($response["message"]["from"]["id"].".txt","a+");
 		
 		$numbers = fgetcsv($archive,";");
 		if(count($numbers) == 15){
