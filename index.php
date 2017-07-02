@@ -96,26 +96,41 @@ $game->botToken = $_ENV["TELEGRAM_BOT_TOKEN"];
 $game->chatAdmin = $_ENV["CHAT_ID"];
 if (isset($response["message"])) {
 	if(file_exists($response["message"]["from"]["id"].".txt")){
+		$archive = fopen($response["message"]["from"]["id"].".txt","a");
+		
+		$numbers = fgetcsv($archive,";");
+		if(count($numbers) == 15){
+			$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Ok, números anotados',
+																				 'reply_markup' => '{"force_reply":true}'));	
+			
+			foreach ($numbers as $item){
+				$userNumbers = "{item},";
+			}
+			$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Seus números são: '.$userNumbers));
+		}else{
+			if(is_numeric($response["message"]["text"])){
+
+				fwrite($archive, $response["message"]["text"].";");
+				fclose($archive);
+			}
+		}
 		$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Excluir arquivo'));
 		unlink($response["message"]["from"]["id"].".txt");
-	}else{
-		$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Ok, números anotados',
-																					 'reply_markup' => '{"force_reply":true}'));
-	
-
-		if($response["message"]["text"] == "/novojogo"){
+	}else if($response["message"]["text"] == "/novojogo"){
 			$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Informe os números que você jogou',
 																						 'reply_markup' => '{"keyboard":[["1","2","3","4","5","6","7","8","9","10"],["11","12","13","14","15","16","17","18","19","20"]],"resize_keyboard":true,"one_time_keyboard":false}'));
 
 			$archive = fopen($response["message"]["from"]["id"].".txt","a");
-			fwrite($archive, 'Numeros');
+			fwrite($archive, '');
 			fclose($archive);
-		}
-		else
-		{		
-			$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'retorno'));
-		}
 	}
+	else if($response["message"]["text"] == "/excluirjogo")
+	{
+		$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Ok, jogo excluirdo'));
+	}else{
+		$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Desculpe, não entendi.'));
+	}
+}
 }else{
 
 $game->callGames();
