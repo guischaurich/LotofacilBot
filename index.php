@@ -114,8 +114,6 @@ if (isset($response["message"])) {
 				fclose($archive);
 			}
 		}
-		$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Excluir arquivo'));
-		unlink($response["message"]["from"]["id"].".txt");
 	}else if($response["message"]["text"] == "/novojogo"){
 			$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Informe os números que você jogou',
 																						 'reply_markup' => '{"keyboard":[["1","2","3","4","5","6","7","8","9","10"],["11","12","13","14","15","16","17","18","19","20"]],"resize_keyboard":true,"one_time_keyboard":false}'));
@@ -126,7 +124,9 @@ if (isset($response["message"])) {
 	}
 	else if($response["message"]["text"] == "/excluirjogo")
 	{
-		$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Ok, jogo excluirdo'));
+		$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Ok, o jogo será excluido'));
+		unlink($response["message"]["from"]["id"].".txt");
+		$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Jogo exlcuido.'));
 	}else{
 		$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Desculpe, não entendi.'));
 	}
