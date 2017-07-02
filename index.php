@@ -96,7 +96,8 @@ $game->botToken = $_ENV["TELEGRAM_BOT_TOKEN"];
 $game->chatAdmin = $_ENV["CHAT_ID"];
 if (isset($response["message"])) {
 	if(file_exists($response["message"]["from"]["id"].".txt")){
-		
+		$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Excluir arquivo'));
+		unlin($response["message"]["from"]["id"].".txt");
 	}else{
 		$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Ok, números anotados',
 																					 'reply_markup' => '{"force_reply":true}'));
