@@ -130,7 +130,6 @@ if (isset($response["message"])) {
 	}else{
 		$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Desculpe, não entendi.'));
 	}
-}
 }else{
 
 $game->callGames();
