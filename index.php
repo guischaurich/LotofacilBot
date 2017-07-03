@@ -109,7 +109,7 @@ if (isset($response["message"]))
 	else if($response["message"]["text"] == "/novojogo")
 	{
 		$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Informe os números que você jogou',
-																					 'reply_markup' => '{"keyboard":[["1","2","3","4","5"],["6","7","8","9","10"],["mais"]],"resize_keyboard":true,"one_time_keyboard":false}'));
+																					 'reply_markup' => '{"keyboard":[["1","2","3","4","5"],["6","7","8","9","10"],["11","12","13","14","15"],["16","17","18","19","20"],["21","22","23","24","25"]],"resize_keyboard":true,"one_time_keyboard":false}'));
 
 		$newArchive = fopen($response["message"]["from"]["id"].".csv","a");
 		
@@ -133,17 +133,7 @@ if (isset($response["message"]))
 		$numbers = explode(";",$archive);
 		//$numbers = fgetcsv($archive,0,";"); echo $numbers;
 		
-		if($response["message"]["text"] == "mais")
-		{			
-			$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'ok, quais os outros números.',
-																						 'reply_markup' => '{"keyboard":[["11","12","13","14","15"],["16","17","18","19","20"],["voltar"]],"resize_keyboard":true,"one_time_keyboard":false}'));
-		}
-		else if($response["message"]["text"] == "voltar")
-		{			
-			$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Informe os números que você jogou',
-																						 'reply_markup' => '{"keyboard":[["1","2","3","4","5"],["6","7","8","9","10"],["mais"]],"resize_keyboard":true,"one_time_keyboard":false}'));
-		}
-		else if(count($numbers) == 15)
+		if(count($numbers) == 15)
 		{
 			$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Ok, números anotados',
 																							'reply_markup' => '{"remove_keyboard":true}'));	
