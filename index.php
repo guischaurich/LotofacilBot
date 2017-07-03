@@ -127,7 +127,14 @@ if (isset($response["message"]))
 	}
 	else if(file_exists($response["message"]["from"]["id"].".csv"))
 	{		
-		
+		if(is_numeric($response["message"]["text"]))
+		{
+			$userArchive = fopen($response["message"]["from"]["id"].".csv","a");
+
+			fwrite($userArchive, $response["message"]["text"].";");
+
+			fclose($userArchive);
+		}
 		$archive = file_get_contents($response["message"]["from"]["id"].".csv"); 
 		
 		$numbers = explode(";",$archive);
@@ -141,17 +148,6 @@ if (isset($response["message"]))
 			$userNumbers = implode(",",$numbers);
 			
 			$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Seus números são: '.$userNumbers));
-		}
-		else
-		{
-			if(is_numeric($response["message"]["text"]))
-			{
-				$userArchive = fopen($response["message"]["from"]["id"].".csv","a");
-				
-				fwrite($userArchive, $response["message"]["text"].";");
-
-				fclose($userArchive);
-			}
 		}
 	}
 	else
