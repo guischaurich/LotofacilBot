@@ -111,11 +111,11 @@ if (isset($response["message"]))
 		$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Informe os números que você jogou',
 																					 'reply_markup' => '{"keyboard":[["1","2","3","4","5"],["6","7","8","9","10"],["mais"]],"resize_keyboard":true,"one_time_keyboard":false}'));
 
-		$archive = fopen($response["message"]["from"]["id"].".csv","a");
+		$newArchive = fopen($response["message"]["from"]["id"].".csv","a");
 		
-		fwrite($archive, '');
+		fwrite($newArchive, '');
 		
-		fclose($archive);
+		fclose($newArchive);
 	}
 	else if($response["message"]["text"] == "/excluirjogo")
 	{
@@ -127,9 +127,11 @@ if (isset($response["message"]))
 	}
 	else if(file_exists($response["message"]["from"]["id"].".csv"))
 	{		
-		$archive = fopen($response["message"]["from"]["id"].".csv","a+");
 		
-		$numbers = fgetcsv($archive,";"); echo $numbers;
+		$archive = file_get_contents($response["message"]["from"]["id"].".csv"); 
+		
+		$numbers = explode(";",$archive);
+		//$numbers = fgetcsv($archive,0,";"); echo $numbers;
 		
 		if($response["message"]["text"] == "mais")
 		{			
@@ -157,9 +159,11 @@ if (isset($response["message"]))
 		{
 			if(is_numeric($response["message"]["text"]))
 			{
-				fwrite($archive, $response["message"]["text"].";");
+				$userArchive = fopen($response["message"]["from"]["id"].".csv","a");
+				
+				fwrite($userArchive, $response["message"]["text"].";");
 
-				fclose($archive);
+				fclose($userArchive);
 			}
 		}
 	}
