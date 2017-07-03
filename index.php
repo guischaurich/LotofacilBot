@@ -102,7 +102,7 @@ if (isset($response["message"]))
 	if($response["message"]["text"] == "/start")
 	{		
 		$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Olá, seja bem vindo ao LotofacilBot.',
-																						 'reply_markup' => '{"force_reply":true}'));
+																						 'reply_markup' => '{"remove_keyboard":true}'));
 		
 		unlink($response["message"]["from"]["id"].".txt");
 	}
@@ -144,7 +144,7 @@ if (isset($response["message"]))
 		else if(count($numbers) == 15)
 		{
 			$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Ok, números anotados',
-																							'reply_markup' => '{"force_reply":true}'));	
+																							'reply_markup' => '{"remove_keyboard":true}'));	
 			
 			foreach ($numbers as $item)
 			{				
