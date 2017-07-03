@@ -146,6 +146,8 @@ if (isset($response["message"]))
 				if(!($item === end($numbers))) 
 				{
 					$userNumbers = $userNumbers.",";
+				}else{
+					$userNumbers = $userNumbers.end($numbers);
 				}
 			}
 			
