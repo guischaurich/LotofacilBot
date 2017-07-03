@@ -140,7 +140,7 @@ if (isset($response["message"]))
 		$numbers = explode(";",$archive);
 		//$numbers = fgetcsv($archive,0,";"); echo $numbers;
 		
-		if(count($numbers) == 16)
+		if(count($numbers) == 15)
 		{
 			$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Ok, números anotados',
 																							'reply_markup' => '{"remove_keyboard":true}'));	
