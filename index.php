@@ -148,10 +148,15 @@ if (isset($response["message"]))
 			$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Ok, números anotados',
 																							'reply_markup' => '{"remove_keyboard":true}'));	
 			
+			$userNumbers = "";
+			
 			foreach ($numbers as $item)
 			{				
 				$userNumbers += "{$item}";
-				if(!($item === end($numbers))) $userNumbers += ",";
+				if(!($item === end($numbers))) 
+				{
+					$userNumbers.",";
+				}
 			}
 			
 			$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Seus números são: '.$userNumbers));
