@@ -104,14 +104,14 @@ if (isset($response["message"]))
 		$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Olá, seja bem vindo ao LotofacilBot.',
 																						 'reply_markup' => '{"remove_keyboard":true}'));
 		
-		unlink($response["message"]["from"]["id"].".txt");
+		unlink($response["message"]["from"]["id"].".csv");
 	}
 	else if($response["message"]["text"] == "/novojogo")
 	{
 		$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Informe os números que você jogou',
 																					 'reply_markup' => '{"keyboard":[["1","2","3","4","5"],["6","7","8","9","10"],["mais"]],"resize_keyboard":true,"one_time_keyboard":false}'));
 
-		$archive = fopen($response["message"]["from"]["id"].".txt","a");
+		$archive = fopen($response["message"]["from"]["id"].".csv","a");
 		
 		fwrite($archive, '');
 		
@@ -121,13 +121,13 @@ if (isset($response["message"]))
 	{
 		$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Ok, o jogo será excluido'));
 	
-		unlink($response["message"]["from"]["id"].".txt");
+		unlink($response["message"]["from"]["id"].".csv");
 		
 		$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Jogo exlcuido.','reply_markup' => '{"remove_keyboard":true}'));
 	}
-	else if(file_exists($response["message"]["from"]["id"].".txt"))
+	else if(file_exists($response["message"]["from"]["id"].".csv"))
 	{		
-		$archive = fopen($response["message"]["from"]["id"].".txt","a+");
+		$archive = fopen($response["message"]["from"]["id"].".csv","a+");
 		
 		$numbers = fgetcsv($archive,";"); echo $numbers;
 		
