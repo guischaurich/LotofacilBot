@@ -129,7 +129,7 @@ if (isset($response["message"]))
 	{		
 		$archive = fopen($response["message"]["from"]["id"].".txt","a+");
 		
-		$numbers = fgetcsv($archive,";");
+		$numbers = fgetcsv($archive,";"); echo $numbers;
 		
 		if($response["message"]["text"] == "mais")
 		{			
