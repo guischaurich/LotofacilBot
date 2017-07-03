@@ -147,10 +147,8 @@ if (isset($response["message"]))
 			
 			$userNumbers = implode(",",$numbers);
 			
-            $result = $game->getLastGame($userNumbers);
-            
-            
-
+            $result = $game->getLastGame($numbers);
+                        
 			$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Você acertou '.$result["hits"].' números no jogo '.$result["gameNumber"].'.'));
 		}else{
 			$userArchive = fopen($response["message"]["from"]["id"].".csv","a");
