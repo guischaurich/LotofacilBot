@@ -113,7 +113,7 @@ if (isset($response["message"]))
 
 		$newArchive = fopen($response["message"]["from"]["id"].".csv","a");
 		
-		fwrite($newArchive, '');
+		//fwrite($newArchive, '');
 		
 		fclose($newArchive);
 	}
