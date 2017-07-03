@@ -103,6 +103,8 @@ if (isset($response["message"]))
 	{		
 		$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Olá, seja bem vindo ao LotofacilBot.',
 																						 'reply_markup' => '{"force_reply":true}'));
+		
+		unlink($response["message"]["from"]["id"].".txt");
 	}
 	else if($response["message"]["text"] == "/novojogo")
 	{
