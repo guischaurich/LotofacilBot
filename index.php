@@ -123,7 +123,7 @@ if (isset($response["message"]))
 	
 		unlink($response["message"]["from"]["id"].".txt");
 		
-		$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Jogo exlcuido.'));
+		$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Jogo exlcuido.','reply_markup' => '{"remove_keyboard":true}'));
 	}
 	else if(file_exists($response["message"]["from"]["id"].".txt"))
 	{		
