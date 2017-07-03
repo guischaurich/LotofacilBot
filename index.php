@@ -142,10 +142,10 @@ if (isset($response["message"]))
 			
 			foreach ($numbers as $item)
 			{				
-				$userNumbers.$item;
+				$userNumbers += $userNumbers.$item;
 				if(!($item === end($numbers))) 
 				{
-					$userNumbers.",";
+					$userNumbers += $userNumbers.",";
 				}
 			}
 			
