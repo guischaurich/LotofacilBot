@@ -2,8 +2,8 @@
 /*
 Bot para conferir jogos da lotofacil.
 Autor: Guilherme Schaurich
-Data: 28/06/2017
-Versão: 1.1
+Data: 02/07/2017
+Versão: 1.2
 */
 
 class confersLotofacil{ 
