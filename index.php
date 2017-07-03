@@ -147,7 +147,11 @@ if (isset($response["message"]))
 			
 			$userNumbers = implode(",",$numbers);
 			
-			$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Seus números são: '.$userNumbers));
+            $result = $game->getLastGame($userNumbers);
+            
+            
+
+			$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Você acertou '.$result["hits"].' números no jogo '.$result["gameNumber"].'.'));
 		}else{
 			$userArchive = fopen($response["message"]["from"]["id"].".csv","a");
 
@@ -163,5 +167,5 @@ if (isset($response["message"]))
 }
 else
 {
-$game->callGames();
+    $game->callGames();
 }
