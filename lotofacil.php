@@ -87,7 +87,7 @@ class confersLotofacil{
 
     public function processStartBot($chatId,$text){
         $this->sendMessage("sendMessage", 
-                            array('chat_id' => $game->chatAdmin,
+                            array('chat_id' => ''.$chatId.'',
                             "text" => $text,
                             'reply_markup' => '{"remove_keyboard":true}'));
 		
