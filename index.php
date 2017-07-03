@@ -143,11 +143,14 @@ if (isset($response["message"]))
 			foreach ($numbers as $item)
 			{				
 				$userNumbers = $userNumbers.$item;
-				if(!($item === end($numbers))) 
+				
+				if($item === end($numbers)) 
+				{
+					$userNumbers = $userNumbers;
+				}
+				else
 				{
 					$userNumbers = $userNumbers.",";
-				}else{
-					$userNumbers = $userNumbers.end($numbers);
 				}
 			}
 			
