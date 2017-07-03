@@ -151,7 +151,7 @@ if (isset($response["message"]))
 			foreach ($numbers as $item)
 			{				
 				$userNumbers += "{$item}";
-				if(!($item === end($numbers)) $userNumbers += ",";
+				if(!($item === end($numbers))) $userNumbers += ",";
 			}
 			
 			$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Seus números são: '.$userNumbers));
