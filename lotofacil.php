@@ -91,6 +91,13 @@ class confersLotofacil{
                             "text" => $text,
                             'reply_markup' => '{"remove_keyboard":true}'));
 		
-		unlink($response["message"]["from"]["id"].".csv");
+		$this->deleteUserArchive($response["message"]["from"]["id"]);
     }
+
+    function deleteUserArchive($userId){
+        unlink("{$userId}.csv");
+    }
+
+
+
 }
