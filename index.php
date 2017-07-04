@@ -22,34 +22,37 @@ $game->chatAdmin = $_ENV["CHAT_ID"];
 
 if (isset($response["message"])) 
 {	
-	if($response["message"]["text"] == "/start")
+	$game->message = $response["message"]["text"];
+	
+	$game->userId = $response["message"]["from"]["id"]
+		
+	if($game->message == "/start")
 	{		
 		$game->processStartBot($chatAdmin,'Olá, seja bem vindo ao LotofacilBot.');
 	}
-	else if($response["message"]["text"] == "/novojogo")
+	else if($game->message == "/novojogo")
 	{
-    $game->processNewGame($chatAdmin);    
-		
+    $game->processNewGame($chatAdmin);    		
 	}
-	else if($response["message"]["text"] == "/excluirjogo")
+	else if($game->message == "/excluirjogo")
 	{
 		$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Ok, o jogo será excluido'));
 	
-		unlink($response["message"]["from"]["id"].".csv");
+		unlink($game->userId.".csv");
 		
 		$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Jogo exlcuido.','reply_markup' => '{"remove_keyboard":true}'));
 	}
-	else if(file_exists($response["message"]["from"]["id"].".csv"))
+	else if(file_exists($game->userId.".csv"))
 	{		
-		if(is_numeric($response["message"]["text"]))
+		if(is_numeric($game->message))
 		{
-			$userArchive = fopen($response["message"]["from"]["id"].".csv","a");
+			$userArchive = fopen($game->userId.".csv","a");
 
-			fwrite($userArchive, $response["message"]["text"]);
+			fwrite($userArchive, $game->message);
 
 			fclose($userArchive);
 		}
-		$archive = file_get_contents($response["message"]["from"]["id"].".csv"); 
+		$archive = file_get_contents($game->userId.".csv"); 
 		
 		$numbers = explode(";",$archive);
 		//$numbers = fgetcsv($archive,0,";"); echo $numbers;
@@ -65,7 +68,7 @@ if (isset($response["message"]))
                         
 			$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Você acertou '.$result["hits"].' números no jogo '.$result["gameNumber"].'.'));
 		}else{
-			$userArchive = fopen($response["message"]["from"]["id"].".csv","a");
+			$userArchive = fopen($game->userId.".csv","a");
 
 			fwrite($userArchive, ";");
 
