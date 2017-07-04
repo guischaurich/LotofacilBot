@@ -14,11 +14,13 @@ class confersLotofacil{
         $this->botToken = $_ENV["TELEGRAM_BOT_TOKEN"];
         
         $this->chatAdmin = $_ENV["CHAT_ID"];
+
+        $this->urlApi = "http://lotodicas.com.br/api/lotofacil/";
     }
 
 
     public function callGames(){
-        $result = $this->getLastGame(['1','2','3','5','7','9','11','13','15','19','20','21','23','24','25']);
+        $result = $this->getLatestNumbersDrawn(['1','2','3','5','7','9','11','13','15','19','20','21','23','24','25']);
 
         echo "Você acertou ".$result["hits"]." números no jogo ".$result["gameNumber"].".";
 
@@ -27,37 +29,18 @@ class confersLotofacil{
         echo "Você acertou ".$result["hits"]." números no jogo ".$result["gameNumber"].".";
     }
     
-    public function getLastGame($numbersPlayed){
-        $url = "http://lotodicas.com.br/api/lotofacil/";
-
-        $lastGame = file_get_contents($url);
+    public function getLatestNumbersDrawnAndGameNumber($numbersPlayed)
+    {
+        $lastGame = file_get_contents($this->urlApi);
 
         $lasGameArray = json_decode($lastGame);
 
-        $gameNumber = $lasGameArray->{"numero"};
-
-        $gameNumbersDrawn = $lasGameArray->{"sorteio"};
-
-        $countNumbersRight = 0;
-
-        foreach ($gameNumbersDrawn as $number) {
-
-            if(in_array($number,$numbersPlayed)){
-
-                $countNumbersRight ++;
-            }
-        } 
-
-        $result = array("hits" => $countNumbersRight, "gameNumber" => $lasGameArray->{"numero"});
-
-        return $result;
+        return = array("numbersDrawn"=>$lasGameArray->{"sorteio"} , "gameNumber"=>$lasGameArray->{"numero"});
     }
 
-    public function getSpecificGame($numbersPlayed,$gameNumber){
-
-        $url = "http://lotodicas.com.br/api/lotofacil/";
-
-        $lastGame = file_get_contents($url.$gameNumber);
+    public function getSpecificGame($numbersPlayed,$gameNumber)
+    {
+        $lastGame = file_get_contents($this->urlApi.$gameNumber);
 
         $lasGameArray = json_decode($lastGame);
 
@@ -138,6 +121,20 @@ class confersLotofacil{
         unlink($userId.".csv");
     }
 
+    public function CheckNumberOfHits($gameNumbersDrawn,$numbersPlayed){
+        $countNumbersRight = 0;
+
+        foreach ($gameNumbersDrawn as $number) {
+
+            if(in_array($number,$numbersPlayed)){
+
+                $countNumbersRight ++;
+            }
+        }
+
+        return $countNumbersRight;
+    }
+
     public function processMessageReceive($chatId){
             
         if($this->message == "/start")
@@ -177,11 +174,13 @@ class confersLotofacil{
                 
                 //$userNumbers = implode(",",$numbers);
                 
-                $result = $this->getLastGame($numbers);
-                            
+                $gameNumbersDrawnaAndGameNumber = $this->getLatestNumbersDrawnAndGameNumber($numbers);
+
+                $numberOfHits = $this->CheckNumberOfHits($gameNumbersDrawnaAndGameNumber["hits"],$numbers);
+
                 $this->sendMessage("sendMessage", 
                                     array('chat_id' => $chatId, 
-                                          "text" => 'Você acertou '.$result["hits"].' números no jogo '.$result["gameNumber"].'.'
+                                          "text" => 'Você acertou '.$numberOfHits.' números no jogo '.$gameNumbersDrawnaAndGameNumber["gameNumber"].'.'
                                           )
                                 );
             }else{
