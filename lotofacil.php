@@ -106,7 +106,7 @@ class confersLotofacil{
 																"one_time_keyboard":false}')
 												);
 
-			$newArchive = fopen($response["message"]["from"]["id"].".csv","a");
+			$newArchive = fopen($chatId.".csv","a");
 
 			fclose($newArchive);
 		}
@@ -119,10 +119,13 @@ class confersLotofacil{
 	
 		$this->deleteUserArchive($game->userId);
 		
-		$this->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Jogo exlcuido.','reply_markup' => '{"remove_keyboard":true}'));
+		$this->sendMessage("sendMessage", array('chat_id' => $chatId, 
+																						"text" => 'Jogo exlcuido.',
+																						'reply_markup' => '{"remove_keyboard":true}')
+											);
 	}
 
-    function deleteUserArchive($userId){
+    public function deleteUserArchive($userId){
         unlink("{$userId}.csv");
     }
 }
