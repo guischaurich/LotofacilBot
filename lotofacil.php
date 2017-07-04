@@ -94,7 +94,7 @@ class confersLotofacil{
 																 'reply_markup' => '{"remove_keyboard":true}')
 												 );
 			
-			$this->deleteUserArchive($response["message"]["from"]["id"]);
+			$this->deleteUserArchive($chatId);
     }
 	
 		public function processNewGame($chatId){
