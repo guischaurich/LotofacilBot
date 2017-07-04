@@ -14,11 +14,8 @@ $response = json_decode($update_response, true);
 
 $game = new confersLotofacil();
 
-$game->botToken = $_ENV["TELEGRAM_BOT_TOKEN"];
+$chatAdmin = $game->chatAdmin;
 
-$chatAdmin = $_ENV["CHAT_ID"];
-
-$game->chatAdmin = $_ENV["CHAT_ID"];
 
 if (isset($response["message"])) 
 {	
