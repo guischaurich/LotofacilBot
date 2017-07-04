@@ -88,7 +88,7 @@ class confersLotofacil{
     }
 
     public function processStartBot($chatId,$text){
-       $this->sendMessage("sendMessage", 
+      $this->sendMessage("sendMessage", 
                            array('chat_id' => ''.$chatId.'',
 																 "text" => $text,
 																 'reply_markup' => '{"remove_keyboard":true}')
@@ -103,17 +103,26 @@ class confersLotofacil{
 																"text" => 'Informe os números que você jogou',
 															  'reply_markup' => '{"keyboard":['.$this->keyboardNumbers.'],
 																"resize_keyboard":true,
-																"one_time_keyboard":false}'));
+																"one_time_keyboard":false}')
+												);
 
 			$newArchive = fopen($response["message"]["from"]["id"].".csv","a");
 
 			fclose($newArchive);
 		}
+	
+	public function processDeleteGame($chatId){
+		$this->sendMessage("sendMessage", 
+											  array('chat_id' => $chatId, 
+															"text" => 'Ok, o jogo será excluido')
+											);
+	
+		$this->deleteUserArchive($game->userId);
+		
+		$this->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Jogo exlcuido.','reply_markup' => '{"remove_keyboard":true}'));
+	}
 
     function deleteUserArchive($userId){
         unlink("{$userId}.csv");
     }
-
-
-
 }

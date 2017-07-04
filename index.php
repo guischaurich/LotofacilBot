@@ -36,11 +36,7 @@ if (isset($response["message"]))
 	}
 	else if($game->message == "/excluirjogo")
 	{
-		$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Ok, o jogo será excluido'));
-	
-		unlink($game->userId.".csv");
-		
-		$game->sendMessage("sendMessage", array('chat_id' => $game->chatAdmin, "text" => 'Jogo exlcuido.','reply_markup' => '{"remove_keyboard":true}'));
+		$game->processDeleteGame($chatAdmin);
 	}
 	else if(file_exists($game->userId.".csv"))
 	{		
