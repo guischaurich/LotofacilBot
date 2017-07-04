@@ -100,8 +100,8 @@ class confersLotofacil{
 		public function processNewGame($chatId){
 			$this->sendMessage("sendMessage", 
 												  array('chat_id' => $chatId,
-																"text" => ''.$keyboardNumbers.'',
-															  'reply_markup' => '{"keyboard":['.$keyboardNumbers.'],
+																"text" => 'Informe os números que você jogou',
+															  'reply_markup' => '{"keyboard":['.$this->keyboardNumbers.'],
 																"resize_keyboard":true,
 																"one_time_keyboard":false}'));
 
