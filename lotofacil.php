@@ -89,22 +89,22 @@ class confersLotofacil{
 
     public function processStartBot($chatId,$text){
       $this->sendMessage("sendMessage", 
-                           array('chat_id' => ''.$chatId.'',
-																 "text" => $text,
-																 'reply_markup' => '{"remove_keyboard":true}')
-												 );
+                         array('chat_id' => ''.$chatId.'',
+                         "text" => $text,
+                         'reply_markup' => '{"remove_keyboard":true}')
+                        );
 			
-			$this->deleteUserArchive($chatId);
+      $this->deleteUserArchive($chatId);
     }
 	
 		public function processNewGame($chatId){
 			$this->sendMessage("sendMessage", 
-												  array('chat_id' => $chatId,
-																"text" => 'Informe os números que você jogou',
-															  'reply_markup' => '{"keyboard":['.$this->keyboardNumbers.'],
-																"resize_keyboard":true,
-																"one_time_keyboard":false}')
-												);
+                                array('chat_id' => $chatId,
+                                            "text" => 'Informe os números que você jogou',
+                                            'reply_markup' => '{"keyboard":['.$this->keyboardNumbers.'],
+                                            "resize_keyboard":true,
+                                            "one_time_keyboard":false}')
+                            );
 
 			$newArchive = fopen($chatId.".csv","a");
 
@@ -113,19 +113,81 @@ class confersLotofacil{
 	
 	public function processDeleteGame($chatId){
 		$this->sendMessage("sendMessage", 
-											  array('chat_id' => $chatId, 
-															"text" => 'Ok, o jogo será excluido')
-											);
+                            array('chat_id' => $chatId, 
+                                  "text" => 'Ok, o jogo será excluido')
+                        );
 	
 		$this->deleteUserArchive($chatId);
 		
-		$this->sendMessage("sendMessage", array('chat_id' => $chatId, 
-																						"text" => 'Jogo exlcuido.',
-																						'reply_markup' => '{"remove_keyboard":true}')
-											);
+		$this->sendMessage("sendMessage", 
+                            array('chat_id' => $chatId, 
+                                  "text" => 'Jogo exlcuido.',
+                                  'reply_markup' => '{"remove_keyboard":true}'
+                                  )
+                        );
 	}
 
     public function deleteUserArchive($userId){
         unlink($userId.".csv");
+    }
+
+    public function processMessageReceive($chatId){
+            
+        if($this->message == "/start")
+        {		
+            $this->processStartBot($chatId,'Olá, seja bem vindo ao LotofacilBot.');
+        }
+        else if($this->message == "/novojogo")
+        {
+            $this->processNewGame($chatId);    		
+        }
+        else if($this->message == "/excluirjogo")
+        {
+            $this->processDeleteGame($chatId);
+        }
+        else if(file_exists($chatId.".csv"))
+        {		
+            if(is_numeric($this->message))
+            {
+                $userArchive = fopen($chatId.".csv","a");
+
+                fwrite($userArchive, $this->message);
+
+                fclose($userArchive);
+            }
+            $archive = file_get_contents($chatId.".csv"); 
+            
+            $numbers = explode(";",$archive);
+            
+            if(count($numbers) == 15)
+            {
+                $this->sendMessage("sendMessage", 
+                                    array('chat_id' => $chatId, 
+                                          "text" => 'Ok, números anotados',
+                                          'reply_markup' => '{"remove_keyboard":true}'
+                                          )
+                                );	
+                
+                //$userNumbers = implode(",",$numbers);
+                
+                $result = $this->getLastGame($numbers);
+                            
+                $this->sendMessage("sendMessage", 
+                                    array('chat_id' => $chatId, 
+                                          "text" => 'Você acertou '.$result["hits"].' números no jogo '.$result["gameNumber"].'.'
+                                          )
+                                );
+            }else{
+                $userArchive = fopen($chatId.".csv","a");
+
+                fwrite($userArchive, ";");
+
+                fclose($userArchive);
+            }
+        }
+        else
+        {
+            $this->sendMessage("sendMessage", array('chat_id' => $chatId, "text" => 'Desculpe, não entendi.'));
+        }
     }
 }
