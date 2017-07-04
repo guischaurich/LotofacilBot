@@ -8,6 +8,8 @@ Versão: 1.2
 
 class confersLotofacil{ 
 	
+	private $keyboardNumbers = '["1","2","3","4","5"],["6","7","8","9","10"],["11","12","13","14","15"],["16","17","18","19","20"],["21","22","23","24","25"]';
+	
     public function callGames(){
         $result = $this->getLastGame(['1','2','3','5','7','9','11','13','15','19','20','21','23','24','25']);
 
@@ -86,13 +88,27 @@ class confersLotofacil{
     }
 
     public function processStartBot($chatId,$text){
-        $this->sendMessage("sendMessage", 
-                            array('chat_id' => ''.$chatId.'',
-                            "text" => $text,
-                            'reply_markup' => '{"remove_keyboard":true}'));
-		
-		$this->deleteUserArchive($response["message"]["from"]["id"]);
+       $this->sendMessage("sendMessage", 
+                           array('chat_id' => ''.$chatId.'',
+																 "text" => $text,
+																 'reply_markup' => '{"remove_keyboard":true}')
+												 );
+			
+			$this->deleteUserArchive($response["message"]["from"]["id"]);
     }
+	
+		public function processNewGame($chatId){
+			$this->sendMessage("sendMessage", 
+												  array('chat_id' => $chatId,
+																"text" => 'Informe os números que você jogou',
+															  'reply_markup' => '{"keyboard":['.$keyboardNumbers.'],
+																"resize_keyboard":true,
+																"one_time_keyboard":false}'));
+
+			$newArchive = fopen($response["message"]["from"]["id"].".csv","a");
+
+			fclose($newArchive);
+		}
 
     function deleteUserArchive($userId){
         unlink("{$userId}.csv");
