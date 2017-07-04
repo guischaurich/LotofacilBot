@@ -117,7 +117,7 @@ class confersLotofacil{
 															"text" => 'Ok, o jogo será excluido')
 											);
 	
-		$this->deleteUserArchive($game->userId);
+		$this->deleteUserArchive($chatId);
 		
 		$this->sendMessage("sendMessage", array('chat_id' => $chatId, 
 																						"text" => 'Jogo exlcuido.',
@@ -126,6 +126,6 @@ class confersLotofacil{
 	}
 
     public function deleteUserArchive($userId){
-        unlink("{$userId}.csv");
+        unlink($userId.".csv");
     }
 }
