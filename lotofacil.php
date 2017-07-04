@@ -35,7 +35,7 @@ class confersLotofacil{
 
         $lasGameArray = json_decode($lastGame);
 
-        return = array("numbersDrawn"=>$lasGameArray->{"sorteio"} , "gameNumber"=>$lasGameArray->{"numero"});
+        return array("numbersDrawn"=>$lasGameArray->{"sorteio"} , "gameNumber"=>$lasGameArray->{"numero"});
     }
 
     public function getSpecificGame($numbersPlayed,$gameNumber)
