@@ -24,7 +24,7 @@ class confersLotofacil{
 
         echo "Você acertou ".$result["hits"]." números no jogo ".$result["gameNumber"].".";
 
-        $result = $this->getSpecificGame(['1','2','3','5','7','9','11','13','15','19','20','21','23','24','25'],"1526");
+        $result = $this->getNumbersDrawnOfSpecificGameNumber(['1','2','3','5','7','9','11','13','15','19','20','21','23','24','25'],"1526");
 
         echo "Você acertou ".$result["hits"]." números no jogo ".$result["gameNumber"].".";
     }
@@ -38,29 +38,13 @@ class confersLotofacil{
         return array("numbersDrawn"=>$lasGameArray->{"sorteio"} , "gameNumber"=>$lasGameArray->{"numero"});
     }
 
-    public function getSpecificGame($numbersPlayed,$gameNumber)
+    public function getNumbersDrawnOfSpecificGameNumber($numbersPlayed,$gameNumber)
     {
-        $lastGame = file_get_contents($this->urlApi.$gameNumber);
+        $specificGame = file_get_contents($this->urlApi.$gameNumber);
 
-        $lasGameArray = json_decode($lastGame);
+        $specificGameArray = json_decode($specificGame);
 
-        $gameNumber = $lasGameArray->{"numero"};
-
-        $gameNumbersDrawn = $lasGameArray->{"sorteio"};
-
-        $countNumbersRight = 0;
-
-        foreach ($gameNumbersDrawn as $number) {
-            
-            if(in_array($number,$numbersPlayed)){
-
-                $countNumbersRight ++;
-            }
-        } 
-
-        $result = array("hits" => $countNumbersRight, "gameNumber" => $lasGameArray->{"numero"});
-
-        return $result;
+        return array("numbersDrawn"=>$specificGameArray->{"sorteio"} , "gameNumber"=>$specificGameArray->{"numero"});;
     }
 
     public function sendMessage($method, $parameters) {
@@ -87,19 +71,19 @@ class confersLotofacil{
       $this->deleteUserArchive($chatId);
     }
 	
-		public function processNewGame($chatId){
-			$this->sendMessage("sendMessage", 
-                                array('chat_id' => $chatId,
-                                            "text" => 'Informe os números que você jogou',
-                                            'reply_markup' => '{"keyboard":['.$this->keyboardNumbers.'],
-                                            "resize_keyboard":true,
-                                            "one_time_keyboard":false}')
-                            );
+    public function processNewGame($chatId){
+        $this->sendMessage("sendMessage", 
+                            array('chat_id' => $chatId,
+                                        "text" => 'Informe os números que você jogou',
+                                        'reply_markup' => '{"keyboard":['.$this->keyboardNumbers.'],
+                                        "resize_keyboard":true,
+                                        "one_time_keyboard":false}')
+                        );
 
-			$newArchive = fopen($chatId.".csv","a");
+        $newArchive = fopen($chatId.".csv","a");
 
-			fclose($newArchive);
-		}
+        fclose($newArchive);
+    }
 	
 	public function processDeleteGame($chatId){
 		$this->sendMessage("sendMessage", 
@@ -135,6 +119,31 @@ class confersLotofacil{
         return $countNumbersRight;
     }
 
+    public function processSpecificGame($chatId){
+
+    }
+
+    public function processCheckGame($chatId,$numbers){
+        $this->sendMessage("sendMessage", 
+                                    array('chat_id' => $chatId, 
+                                          "text" => 'Ok, números anotados',
+                                          'reply_markup' => '{"remove_keyboard":true}'
+                                          )
+                                );	
+                
+        //$userNumbers = implode(",",$numbers);
+        
+        $gameNumbersDrawnaAndGameNumber = $this->getLatestNumbersDrawnAndGameNumber($numbers);
+
+        $numberOfHits = $this->CheckNumberOfHits($gameNumbersDrawnaAndGameNumber["numbersDrawn"],$numbers);
+
+        $this->sendMessage("sendMessage", 
+                            array('chat_id' => $chatId, 
+                                    "text" => 'Você acertou '.$numberOfHits.' números no jogo '.$gameNumbersDrawnaAndGameNumber["gameNumber"].'.'
+                                    )
+                        );
+    }
+
     public function processMessageReceive($chatId){
             
         if($this->message == "/start")
@@ -149,46 +158,31 @@ class confersLotofacil{
         {
             $this->processDeleteGame($chatId);
         }
+        else if($this->message == "/conferirjogoespecifico"){
+            $this->processSpecificGame($chatId);
+        }
         else if(file_exists($chatId.".csv"))
         {		
+            $archive = file_get_contents($chatId.".csv"); 
+            
+            $numbers = explode(";",$archive);
+
             if(is_numeric($this->message))
             {
                 $userArchive = fopen($chatId.".csv","a");
 
-                fwrite($userArchive, $this->message);
-
-                fclose($userArchive);
+                fwrite($userArchive, $this->message);                        
             }
-            $archive = file_get_contents($chatId.".csv"); 
-            
-            $numbers = explode(";",$archive);
-            
-            if(count($numbers) == 15)
-            {
-                $this->sendMessage("sendMessage", 
-                                    array('chat_id' => $chatId, 
-                                          "text" => 'Ok, números anotados',
-                                          'reply_markup' => '{"remove_keyboard":true}'
-                                          )
-                                );	
-                
-                //$userNumbers = implode(",",$numbers);
-                
-                $gameNumbersDrawnaAndGameNumber = $this->getLatestNumbersDrawnAndGameNumber($numbers);
-
-                $numberOfHits = $this->CheckNumberOfHits($gameNumbersDrawnaAndGameNumber["numbersDrawn"],$numbers);
-
-                $this->sendMessage("sendMessage", 
-                                    array('chat_id' => $chatId, 
-                                          "text" => 'Você acertou '.$numberOfHits.' números no jogo '.$gameNumbersDrawnaAndGameNumber["gameNumber"].'.'
-                                          )
-                                );
-            }else{
-                $userArchive = fopen($chatId.".csv","a");
-
+            if(count($numbers)<=14){
                 fwrite($userArchive, ";");
-
                 fclose($userArchive);
+            }else{
+                fclose($userArchive);
+                $archive = file_get_contents($chatId.".csv"); 
+
+                $numbers = explode(";",$archive);
+                
+                $this->processCheckGame($chatId,$numbers);
             }
         }
         else
