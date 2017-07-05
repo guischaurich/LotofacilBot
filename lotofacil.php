@@ -2,8 +2,8 @@
 /*
 Bot para conferir jogos da lotofacil.
 Autor: Guilherme Schaurich
-Data: 02/07/2017
-Versão: 1.2
+Data: 04/07/2017
+Versão: 1.3
 */
 
 class confersLotofacil{ 
@@ -37,15 +37,9 @@ class confersLotofacil{
 
         $lasGameArray = json_decode($lastGame);
 
-        return array("numbersDrawn"=>$lasGameArray->{"sorteio"} , "gameNumber"=>$lasGameArray->{"numero"});
+        return array("numbersDrawn"=>$lasGameArray->{"sorteio"} , "gameNumber"=>$lasGameArray->{"numero"}, "date"=>$lasGameArray->{"data"});
     }
 
-    /*
-    *Funcao para pegar os numeros sorteados em um jogo especifico.
-    * @access public
-    * @param numero do sorteio
-    * return array com numeros sortedos
-    */
     public function getNumbersDrawnOfSpecificGameNumber($gameNumber)
     {
         $specificGame = file_get_contents($this->urlApi.$gameNumber);
@@ -53,8 +47,8 @@ class confersLotofacil{
         $specificGameArray = json_decode($specificGame);
 
         return array("numbersDrawn"=>$specificGameArray->{"sorteio"} , 
-                     "gameNumber"=>$lasGameArray->{"numero"},
-                     "date"=>$lasGameArray->{"data"});
+                     "gameNumber"=>$specificGameArray->{"numero"},
+                     "date"=>$specificGameArray->{"data"});
     }
 
     public function sendMessage($method, $parameters) {
@@ -98,20 +92,30 @@ class confersLotofacil{
     }
 	
 	public function processDeleteGame($chatId){
-		$this->sendMessage("sendMessage", 
-                            array('chat_id' => $chatId, 
-                                  "text" => 'Ok, o jogo será excluido')
-                        );
-	
-		$this->deleteUserArchive($chatId.".csv");
-		
-		$this->sendMessage("sendMessage", 
-                            array('chat_id' => $chatId, 
-                                  "text" => 'Jogo exlcuido.',
-                                  'reply_markup' => '{"keyboard":['.$this->keyboardMenu.'],
-                                  "resize_keyboard":true}'
-                                 )
-                        );
+        if(file_exists($chatId.".csv")){
+            $this->sendMessage("sendMessage", 
+                                array('chat_id' => $chatId, 
+                                    "text" => 'Ok, o jogo será excluido')
+                            );
+        
+            $this->deleteUserArchive($chatId.".csv");
+            
+            $this->sendMessage("sendMessage", 
+                                array('chat_id' => $chatId, 
+                                    "text" => 'Jogo exlcuido.',
+                                    'reply_markup' => '{"keyboard":['.$this->keyboardMenu.'],
+                                    "resize_keyboard":true}'
+                                    )
+                            );
+        }else{
+            $this->sendMessage("sendMessage", 
+                                array('chat_id' => $chatId, 
+                                    "text" => 'Não há jogo para ser excluido.',
+                                    'reply_markup' => '{"keyboard":['.$this->keyboardMenu.'],
+                                    "resize_keyboard":true}'
+                                    )
+                            );
+        }
 	}
 
     public function deleteUserArchive($archiveName){
@@ -165,7 +169,7 @@ class confersLotofacil{
 
             $this->sendMessage("sendMessage", 
                                 array('chat_id' => $chatId, 
-                                        "text" => 'Você acertou '.$numberOfHits.' números no jogo '.$gameNumbersDrawnaAndGameNumber["gameNumber"].'.'
+                                        "text" => 'Você acertou '.$numberOfHits.' números no jogo '.$gameNumbersDrawnaAndGameNumber["gameNumber"].'. Este jogo foi realizado em '.$gameNumbersDrawnaAndGameNumber["date"].'.'
                                         )
                             );
         }else{
