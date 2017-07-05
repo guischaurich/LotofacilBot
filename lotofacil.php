@@ -29,7 +29,7 @@ class confersLotofacil{
         echo "Você acertou ".$result["hits"]." números no jogo ".$result["gameNumber"].".";
     }
     
-    public function getLatestNumbersDrawnAndGameNumber($numbersPlayed)
+    public function getLatestNumbersDrawnAndGameNumber()
     {
         $lastGame = file_get_contents($this->urlApi);
 
@@ -38,13 +38,19 @@ class confersLotofacil{
         return array("numbersDrawn"=>$lasGameArray->{"sorteio"} , "gameNumber"=>$lasGameArray->{"numero"});
     }
 
-    public function getNumbersDrawnOfSpecificGameNumber($numbersPlayed,$gameNumber)
+    /*
+    *Funcao para pegar os numeros sorteados em um jogo especifico.
+    * @access public
+    * @param numero do sorteio
+    * return array com numeros sortedos
+    */
+    public function getNumbersDrawnOfSpecificGameNumber($gameNumber)
     {
         $specificGame = file_get_contents($this->urlApi.$gameNumber);
 
         $specificGameArray = json_decode($specificGame);
 
-        return array("numbersDrawn"=>$specificGameArray->{"sorteio"} , "gameNumber"=>$specificGameArray->{"numero"});;
+        return array("numbersDrawn"=>$specificGameArray->{"sorteio"} , "gameNumber"=>$lasGameArray->{"numero"});;
     }
 
     public function sendMessage($method, $parameters) {
@@ -68,7 +74,7 @@ class confersLotofacil{
                          'reply_markup' => '{"remove_keyboard":true}')
                         );
 			
-      $this->deleteUserArchive($chatId);
+      $this->deleteUserArchive($chatId.".csv");
     }
 	
     public function processNewGame($chatId){
@@ -91,7 +97,7 @@ class confersLotofacil{
                                   "text" => 'Ok, o jogo será excluido')
                         );
 	
-		$this->deleteUserArchive($chatId);
+		$this->deleteUserArchive($chatId.".csv");
 		
 		$this->sendMessage("sendMessage", 
                             array('chat_id' => $chatId, 
@@ -101,8 +107,8 @@ class confersLotofacil{
                         );
 	}
 
-    public function deleteUserArchive($userId){
-        unlink($userId.".csv");
+    public function deleteUserArchive($archiveName){
+        unlink($archiveName);
     }
 
     public function CheckNumberOfHits($gameNumbersDrawn,$numbersPlayed){
@@ -121,6 +127,41 @@ class confersLotofacil{
 
     public function processSpecificGame($chatId){
 
+        if(file_exists($chatId.".csv")){
+            $this->sendMessage("sendMessage", 
+                        array('chat_id' => $chatId, 
+                                "text" => 'com qual jogo você quer conferir?'
+                                )
+                    );
+
+            $userArchive = fopen($chatId."specific.csv","a");
+
+            fclose($userArchive);
+        }else{
+            $this->sendMessage("sendMessage", 
+                        array('chat_id' => $chatId, 
+                                "text" => 'preciso que você cadastre um novo jogo.'
+                                )
+                    );
+        }
+    }
+
+    public function processCheckHitsToGameNumber($chatId,$gameNumber){
+        $gameNumbersDrawn = $this->getNumbersDrawnOfSpecificGameNumber($gameNumber);
+
+        $archive = file_get_contents($chatId.".csv"); 
+
+        $numbers = explode(";",$archive);
+
+        $numberOfHits = $this-> CheckNumberOfHits($gameNumbersDrawn,$number);
+
+        $this->sendMessage("sendMessage", 
+                            array('chat_id' => $chatId, 
+                                    "text" => 'Você acertou '.$numberOfHits.' números no jogo '.$gameNumber.'.'
+                                    )
+                        );
+
+        $this->deleteUserArchive($chatId."specific.csv");
     }
 
     public function processCheckGame($chatId,$numbers){
@@ -133,7 +174,7 @@ class confersLotofacil{
                 
         //$userNumbers = implode(",",$numbers);
         
-        $gameNumbersDrawnaAndGameNumber = $this->getLatestNumbersDrawnAndGameNumber($numbers);
+        $gameNumbersDrawnaAndGameNumber = $this->getLatestNumbersDrawnAndGameNumber();
 
         $numberOfHits = $this->CheckNumberOfHits($gameNumbersDrawnaAndGameNumber["numbersDrawn"],$numbers);
 
@@ -158,8 +199,13 @@ class confersLotofacil{
         {
             $this->processDeleteGame($chatId);
         }
-        else if($this->message == "/conferirjogoespecifico"){
+        else if($this->message == "/conferirjogoespecifico")
+        {
             $this->processSpecificGame($chatId);
+        }
+        else if(file_exists($chatId."specific.csv"))
+        {
+            $this->processCheckHitsToGameNumber($chatId,$this->message);
         }
         else if(file_exists($chatId.".csv"))
         {		
