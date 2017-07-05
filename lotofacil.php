@@ -52,7 +52,9 @@ class confersLotofacil{
 
         $specificGameArray = json_decode($specificGame);
 
-        return array("numbersDrawn"=>$specificGameArray->{"sorteio"} , "gameNumber"=>$lasGameArray->{"numero"});;
+        return array("numbersDrawn"=>$specificGameArray->{"sorteio"} , 
+                     "gameNumber"=>$lasGameArray->{"numero"},
+                     "date"=>$lasGameArray->{"data"});
     }
 
     public function sendMessage($method, $parameters) {
@@ -144,26 +146,35 @@ class confersLotofacil{
         }else{
             $this->sendMessage("sendMessage", 
                         array('chat_id' => $chatId, 
-                                "text" => 'preciso que você cadastre um novo jogo.'
+                                "text" => 'primeiro você deve cadastrar um jogo.'
                                 )
                     );
         }
     }
 
     public function processCheckHitsLastGame($chatId){
-        $gameNumbersDrawnaAndGameNumber = $this->getLatestNumbersDrawnAndGameNumber();
+        if(file_exists($chatId.".csv")){
+            $gameNumbersDrawnaAndGameNumber = $this->getLatestNumbersDrawnAndGameNumber();
 
-        $archive = file_get_contents($chatId.".csv"); 
+            $archive = file_get_contents($chatId.".csv"); 
 
-        $numbers = explode(";",$archive);
+            $numbers = explode(";",$archive);
 
-        $numberOfHits = $this->CheckNumberOfHits($gameNumbersDrawnaAndGameNumber["numbersDrawn"],$numbers);
+            $numberOfHits = $this->CheckNumberOfHits($gameNumbersDrawnaAndGameNumber["numbersDrawn"],$numbers);
 
-        $this->sendMessage("sendMessage", 
-                            array('chat_id' => $chatId, 
-                                    "text" => 'Você acertou '.$numberOfHits.' números no jogo '.$gameNumbersDrawnaAndGameNumber["gameNumber"].'.'
-                                    )
-                        );
+            $this->sendMessage("sendMessage", 
+                                array('chat_id' => $chatId, 
+                                        "text" => 'Você acertou '.$numberOfHits.' números no jogo '.$gameNumbersDrawnaAndGameNumber["gameNumber"].'.'
+                                        )
+                            );
+        }else{
+            $this->sendMessage("sendMessage", 
+                                    array('chat_id' => $chatId, 
+                                            "text" => 'primeiro você deve cadastrar um jogo.'
+                                            )
+                                );
+        }
+        
     }
 
     public function processCheckHitsToGameNumber($chatId,$gameNumber){
@@ -177,7 +188,7 @@ class confersLotofacil{
 
         $this->sendMessage("sendMessage", 
                             array('chat_id' => $chatId, 
-                                    "text" => 'Você acertou '.$numberOfHits.' números no jogo '.$gameNumber.'.'
+                                    "text" => 'Você acertou '.$numberOfHits.' números no jogo '.$gameNumber.'. Este jogo foi realizado em '.$gameNumbersDrawn["date"].'.'
                                     )
                         );
 
