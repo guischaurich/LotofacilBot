@@ -109,7 +109,7 @@ class confersLotofacil{
                             array('chat_id' => $chatId, 
                                   "text" => 'Jogo exlcuido.',
                                   'reply_markup' => '{"keyboard":['.$this->keyboardMenu.'],
-                                  "resize_keyboard":true'
+                                  "resize_keyboard":true}'
                                  )
                         );
 	}
