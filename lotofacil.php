@@ -73,7 +73,7 @@ class confersLotofacil{
       $this->sendMessage("sendMessage", 
                          array('chat_id' => $chatId,
                          "text" => $text,
-                         'reply_markup' => '{"keyboard":['.$this->keyboardMenu.']},
+                         'reply_markup' => '{"keyboard":['.$this->keyboardMenu.'],
                          "resize_keyboard":true,
                          "one_time_keyboard":true}')
                         );
