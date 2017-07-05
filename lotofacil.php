@@ -108,8 +108,9 @@ class confersLotofacil{
 		$this->sendMessage("sendMessage", 
                             array('chat_id' => $chatId, 
                                   "text" => 'Jogo exlcuido.',
-                                  'reply_markup' => '{"remove_keyboard":true}'
-                                  )
+                                  'reply_markup' => '{"keyboard":['.$this->keyboardMenu.'],
+                                  "resize_keyboard":true'
+                                 )
                         );
 	}
 
@@ -188,8 +189,9 @@ class confersLotofacil{
 
         $this->sendMessage("sendMessage", 
                             array('chat_id' => $chatId, 
-                                    "text" => 'Você acertou '.$numberOfHits.' números no jogo '.$gameNumber.'. Este jogo foi realizado em '.$gameNumbersDrawn["date"].'.'
-                                    )
+                                    "text" => 'Você acertou '.$numberOfHits.' números no jogo '.$gameNumber.'. Este jogo foi realizado em '.$gameNumbersDrawn["date"].'.',
+                                    'reply_markup' => '{"keyboard":['.$this->keyboardMenu.'],
+                                    "resize_keyboard":true')
                         );
 
         $this->deleteUserArchive($chatId."specific.csv");
@@ -199,7 +201,8 @@ class confersLotofacil{
         $this->sendMessage("sendMessage", 
                             array('chat_id' => $chatId, 
                                     "text" => 'Ok, números anotados',
-                                    'reply_markup' => '{"keyboard":['.$this->keyboardMenu.']}'
+                                    'reply_markup' => '{"keyboard":['.$this->keyboardMenu.'],
+                                    "resize_keyboard":true}'
                                     )
                         );	
         
@@ -256,7 +259,8 @@ class confersLotofacil{
         }
         else
         {
-            $this->sendMessage("sendMessage", array('chat_id' => $chatId, "text" => 'Desculpe, não entendi.'));
+            $this->sendMessage("sendMessage", array('chat_id' => $chatId, 
+                                                    "text" => 'Desculpe, não entendi.'));
         }
     }
 }
