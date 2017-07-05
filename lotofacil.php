@@ -73,7 +73,7 @@ class confersLotofacil{
       $this->sendMessage("sendMessage", 
                          array('chat_id' => ''.$chatId.'',
                          "text" => $text,
-                         'reply_markup' => '{"keyboard":['.$this->keyboardMenu.']},
+                         'reply_markup' => '{"keyboard":['.$this->keyboardNumbers.']},
                          "resize_keyboard":true,
                          "one_time_keyboard":true}')
                         );
@@ -186,12 +186,12 @@ class confersLotofacil{
 
     public function processCheckGame($chatId,$numbers){
         $this->sendMessage("sendMessage", 
-                                    array('chat_id' => $chatId, 
-                                          "text" => 'Ok, números anotados',
-                                          'reply_markup' => '{"keyboard":['.$this->keyboardMenu.']}'
-                                          )
-                                );	
-                
+                            array('chat_id' => $chatId, 
+                                    "text" => 'Ok, números anotados',
+                                    'reply_markup' => '{"keyboard":['.$this->keyboardMenu.']}'
+                                    )
+                        );	
+        
         //$userNumbers = implode(",",$numbers);
     }
 
