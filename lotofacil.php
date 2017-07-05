@@ -74,9 +74,10 @@ class confersLotofacil{
                          array('chat_id' => ''.$chatId.'',
                          "text" => $text,
                          'reply_markup' => '{"keyboard":['.$this->keyboardMenu.']},
+                         "resize_keyboard":true,
                          "one_time_keyboard":true}')
                         );
-			
+
       $this->deleteUserArchive($chatId.".csv");
     }
 	
