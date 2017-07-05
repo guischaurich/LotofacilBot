@@ -191,7 +191,7 @@ class confersLotofacil{
                             array('chat_id' => $chatId, 
                                     "text" => 'Você acertou '.$numberOfHits.' números no jogo '.$gameNumber.'. Este jogo foi realizado em '.$gameNumbersDrawn["date"].'.',
                                     'reply_markup' => '{"keyboard":['.$this->keyboardMenu.'],
-                                    "resize_keyboard":true')
+                                    "resize_keyboard":true}')
                         );
 
         $this->deleteUserArchive($chatId."specific.csv");
