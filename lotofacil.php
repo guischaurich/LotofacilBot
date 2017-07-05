@@ -153,7 +153,7 @@ class confersLotofacil{
 
         $numbers = explode(";",$archive);
 
-        $numberOfHits = $this-> CheckNumberOfHits($gameNumbersDrawn["numbersDrawn"],$number);
+        $numberOfHits = $this-> CheckNumberOfHits($gameNumbersDrawn["numbersDrawn"],$numbers);
 
         $this->sendMessage("sendMessage", 
                             array('chat_id' => $chatId, 
