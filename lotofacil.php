@@ -11,6 +11,8 @@ class confersLotofacil{
 	function __construct(){
         $this->keyboardNumbers = '["1","2","3","4","5"],["6","7","8","9","10"],["11","12","13","14","15"],["16","17","18","19","20"],["21","22","23","24","25"]';
         
+        $this->keyboardMenu = '[["Cadastrar jogo","Ultimo Sorteio"],["Outro Sorteio","Excluir Jogo"]]';
+
         $this->botToken = $_ENV["TELEGRAM_BOT_TOKEN"];
         
         $this->chatAdmin = $_ENV["CHAT_ID"];
@@ -71,7 +73,8 @@ class confersLotofacil{
       $this->sendMessage("sendMessage", 
                          array('chat_id' => ''.$chatId.'',
                          "text" => $text,
-                         'reply_markup' => '{"remove_keyboard":true}')
+                         'reply_markup' => '{"keyboard":['.$this->keyboardMenu.']},
+                         "one_time_keyboard":true}')
                         );
 			
       $this->deleteUserArchive($chatId.".csv");
@@ -146,6 +149,22 @@ class confersLotofacil{
         }
     }
 
+    public function processCheckHitsLastGame($chatId){
+        $gameNumbersDrawnaAndGameNumber = $this->getLatestNumbersDrawnAndGameNumber();
+
+        $archive = file_get_contents($chatId.".csv"); 
+
+        $numbers = explode(";",$archive);
+
+        $numberOfHits = $this->CheckNumberOfHits($gameNumbersDrawnaAndGameNumber["numbersDrawn"],$numbers);
+
+        $this->sendMessage("sendMessage", 
+                            array('chat_id' => $chatId, 
+                                    "text" => 'Você acertou '.$numberOfHits.' números no jogo '.$gameNumbersDrawnaAndGameNumber["gameNumber"].'.'
+                                    )
+                        );
+    }
+
     public function processCheckHitsToGameNumber($chatId,$gameNumber){
         $gameNumbersDrawn = $this->getNumbersDrawnOfSpecificGameNumber($gameNumber);
 
@@ -168,21 +187,11 @@ class confersLotofacil{
         $this->sendMessage("sendMessage", 
                                     array('chat_id' => $chatId, 
                                           "text" => 'Ok, números anotados',
-                                          'reply_markup' => '{"remove_keyboard":true}'
+                                          'reply_markup' => '{"keyboard":['.$this->keyboardMenu.']}'
                                           )
                                 );	
                 
         //$userNumbers = implode(",",$numbers);
-        
-        $gameNumbersDrawnaAndGameNumber = $this->getLatestNumbersDrawnAndGameNumber();
-
-        $numberOfHits = $this->CheckNumberOfHits($gameNumbersDrawnaAndGameNumber["numbersDrawn"],$numbers);
-
-        $this->sendMessage("sendMessage", 
-                            array('chat_id' => $chatId, 
-                                    "text" => 'Você acertou '.$numberOfHits.' números no jogo '.$gameNumbersDrawnaAndGameNumber["gameNumber"].'.'
-                                    )
-                        );
     }
 
     public function processMessageReceive($chatId){
@@ -191,17 +200,21 @@ class confersLotofacil{
         {		
             $this->processStartBot($chatId,'Olá, seja bem vindo ao LotofacilBot.');
         }
-        else if($this->message == "/novojogo")
+        else if($this->message == "Cadastrar jogo")
         {
             $this->processNewGame($chatId);    		
         }
-        else if($this->message == "/excluirjogo")
+        else if($this->message == "Excluir Jogo")
         {
             $this->processDeleteGame($chatId);
         }
-        else if($this->message == "/conferirjogoespecifico")
+        else if($this->message == "Outro Sorteio")
         {
             $this->processSpecificGame($chatId);
+        }
+        else if($this->message == "Ultimo Sorteio")
+        {
+            $this->processCheckHitsLastGame($chatId);
         }
         else if(file_exists($chatId."specific.csv"))
         {
@@ -221,12 +234,10 @@ class confersLotofacil{
             }
             if(count($numbers)<=14){
                 fwrite($userArchive, ";");
+
                 fclose($userArchive);
             }else{
                 fclose($userArchive);
-                $archive = file_get_contents($chatId.".csv"); 
-
-                $numbers = explode(";",$archive);
                 
                 $this->processCheckGame($chatId,$numbers);
             }
