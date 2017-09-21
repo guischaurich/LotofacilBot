@@ -21,9 +21,9 @@ if (isset($response["message"]))
 {	
 	$game->message = $response["message"]["text"];
         
-	$game->userId = $response["message"]["from"]["id"];
+	//$game->userId = $response["message"]["from"]["id"];
 
-	$game->processMessageReceive($game->userId);
+	$game->processMessageReceive($chatAdmin);
 }
 else
 {
