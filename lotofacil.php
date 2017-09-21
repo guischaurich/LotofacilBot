@@ -17,6 +17,14 @@ class confersLotofacil{
         
         $this->chatAdmin = $_ENV["CHAT_ID"];
 
+        $this->dbHost = $_ENV["DB_HOST"];
+
+        $this->database = $_ENV["DATABASE"];
+
+        $this->dbUser = $_ENV["DB_USER"];
+
+        $this->dbPass = $_ENV["DB_PASS"];
+
         $this->urlApi = "http://lotodicas.com.br/api/lotofacil/";
     }
 
@@ -78,6 +86,8 @@ class confersLotofacil{
     }
 	
     public function processNewGame($chatId){
+        $this->connectDB($chatId);
+
         $this->sendMessage("sendMessage", 
                             array('chat_id' => $chatId,
                                         "text" => 'Informe os números que você jogou',
@@ -89,6 +99,17 @@ class confersLotofacil{
         $newArchive = fopen($chatId.".csv","a");
 
         fclose($newArchive);
+    }
+
+    private function connectDB($chatId){
+        $con_string = "host=".$this->dbHost."port=5432 dbname=".$this->database." user=".$this->dbUser." password=".$this->dbPass;
+        $bdcon4 = pg_connect($con_string);  
+        $result = pg_query($conn, "select * from jogo");
+        
+        $this->sendMessage("sendMessage", 
+        array('chat_id' => $chatId,
+                    "text" => ''.var_dump(pg_fetch_all($result)).'')
+        );        
     }
 	
 	public function processDeleteGame($chatId){
