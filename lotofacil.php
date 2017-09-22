@@ -103,7 +103,7 @@ class confersLotofacil{
 
     private function connectDB($chatId){
         $con_string = "host=".$this->dbHost."port=5432 dbname=".$this->database." user=".$this->dbUser." password=".$this->dbPass;
-        $bdcon4 = pg_connect($con_string);  
+        $conn = pg_connect($con_string);  
         $result = pg_query($conn, "select * from jogo");
         
         $this->sendMessage("sendMessage", 
