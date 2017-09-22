@@ -106,10 +106,29 @@ class confersLotofacil{
         $conn = pg_connect($con_string);  
         $result = pg_query($conn, "select * from jogo");
         
-        $this->sendMessage("sendMessage", 
+
+        if  (!$result) {
+            $this->sendMessage("sendMessage", 
         array('chat_id' => $chatId,
-                    "text" => ''.var_dump(pg_fetch_all($result)).'')
+                    "text" => 'Erro ao executar a query')
         );        
+           }
+           if (pg_num_rows($result) == 0) {
+                        $this->sendMessage("sendMessage", 
+        array('chat_id' => $chatId,
+                    "text" => 'Query sem retorno')
+        );        
+           }
+           else {
+            while ($row = pg_fetch_array($result)) {
+                $this->sendMessage("sendMessage", 
+                array('chat_id' => $chatId,
+                            "text" => 'Retorno :'.$row.'')
+                );        
+            }
+           }
+
+        
     }
 	
 	public function processDeleteGame($chatId){
